@@ -1,10 +1,11 @@
 import './App.css';
 import React from "react";
-import resizer from 'react-image-file-resizer';
+import Cropper from 'cropperjs';
 
 type Props = {};
 type State = {
-    file: any
+    file: any,
+    cropper: any
 };
 
 function calculateMaxSize(
@@ -35,7 +36,8 @@ class App extends React.Component<Props, State> {
     constructor(props) {
         super(props);
         this.state = {
-            file: null
+            file: null,
+            cropper: null
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -59,15 +61,15 @@ class App extends React.Component<Props, State> {
             newSize = calculateMaxSize(
                 img.naturalWidth,
                 img.naturalHeight,
-                800,
-                800
+                1600,
+                1600
             );
         } else {
             newSize = calculateMaxSize(
                 img.naturalWidth,
                 img.naturalHeight,
-                600,
-                600
+                1200,
+                1200
             );
         }
 
@@ -87,10 +89,27 @@ class App extends React.Component<Props, State> {
             imgData.data[i + 3] = 255;
         }
         ctx.putImageData(imgData, 0, 0);
+
+        global.cropper = new Cropper(
+            canvas,
+            {
+                viewMode: 1,
+                dragMode: 'crop',
+                responsive: true,
+                checkOrientation: true,
+                autoCrop: true,
+                autoCropArea: 0.5,
+                rotatable: true,
+                scalable: true,
+                zoomable: true,
+                cropBoxResizable: true,
+                cropBoxMovable: true,
+                ready: () => { console.log('ready'); global.cropper.crop(); },
+            }
+        )
     }
 
     download() {
-        const canvas = document.getElementById("canvas") as HTMLCanvasElement;
         const link = document.createElement('a');
 
         const fn = prompt('filename?' , window.navigator.userAgent);
@@ -100,7 +119,7 @@ class App extends React.Component<Props, State> {
         }
 
         link.download = fn + '.jpeg';
-        link.href = canvas.toDataURL("image/jpeg", 0.95);
+        link.href = global.cropper.getCroppedCanvas().toDataURL('image/jpeg', 0.95);
         link.click()
     }
 
@@ -111,7 +130,11 @@ class App extends React.Component<Props, State> {
                 <div></div>
                 <img id="img" src={this.state.file} width="auto" height="300" style={{'display': 'none'}} alt="uploaded" onLoad={this.handleImageLoaded}/>
                 <div></div>
-                <canvas id="canvas"></canvas>
+
+                <div>
+                    <canvas id="canvas" style={{ 'display': 'block', 'maxWidth': '100%' }}></canvas>
+                </div>
+
                 <div></div>
                 <input type="button" onClick={this.download} value="download!"/>
             </div>
