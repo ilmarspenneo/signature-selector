@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "strict": true,
+        "allowJs": true,
+        "sourceMap": true,
+        "noImplicitAny": false,
+        "resolveJsonModule": true,
+        "module": "esnext",
+        "target": "es5",
+        "jsx": "react-jsx",
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "lib": ["es2017", "dom"],
+        "baseUrl": "./src",
+        "rootDirs": ["./src", "./resources", "./test"],
+        "skipLibCheck": true,
+        "paths": {
+            "src/*": ["./src/*"],
+        },
+        "allowSyntheticDefaultImports": true,
+        "noErrorTruncation": true,
+        "useUnknownInCatchVariables": false
+    },
+    "include": ["./src/**/*", "./typings.d.ts"],
+    "exclude": ["node_modules", "**/*.spec.ts"]
+}
