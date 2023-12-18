@@ -104,7 +104,33 @@ class App extends React.Component<Props, State> {
                 zoomable: true,
                 cropBoxResizable: true,
                 cropBoxMovable: true,
-                ready: () => { console.log('ready'); global.cropper.crop(); },
+                ready: () => {
+                    console.log('ready');
+                    global.cropper.crop();
+                },
+                crop: () => {
+                    console.log(123123);
+                    const preview = document.getElementById('preview') as HTMLCanvasElement;
+                    const ctx = preview.getContext("2d") as CanvasRenderingContext2D;
+
+                    const newSize = calculateMaxSize(
+                        global.cropper.getCroppedCanvas().width,
+                        global.cropper.getCroppedCanvas().height,
+                        150,
+                        28
+                    );
+
+                    ctx.drawImage(
+                        global.cropper.getCroppedCanvas(),
+                        0,
+                        0,
+                        newSize.width,
+                        newSize.height
+                    );
+
+                    preview.width = newSize.width;
+                    preview.height = newSize.height;
+                }
             }
         )
     }
@@ -133,6 +159,10 @@ class App extends React.Component<Props, State> {
 
                 <div>
                     <canvas id="canvas" style={{ 'display': 'block', 'maxWidth': '100%' }}></canvas>
+                </div>
+
+                <div>
+                    <canvas id="preview"></canvas>
                 </div>
 
                 <div></div>
